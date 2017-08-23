@@ -91,9 +91,10 @@ function getItem($itemId) {
  * @param object $item
  * @return object
  */
- function toJson($item) {
+function toJson($item) {
   $array = [
     "status"       => 'true',
+    "associate"    => (string) AWS_ASSOCIATE_TAG,
     "asin"         => (string) $item->ASIN,
     "title"        => (string) $item->ItemAttributes->Title,
     "author"       => (string) $item->ItemAttributes->Author,

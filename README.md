@@ -10,6 +10,7 @@
 ```json
 {
     "result": "true",
+    "associate": "ASSOCIATE TAG",
     "asin": "B0746FGCPH",
     "title": "\u308d\u3093\u3050\u3089\u3044\u3060\u3041\u3059\uff01: 9 (REX\u30b3\u30df\u30c3\u30af\u30b9)",
     "author": "\u4e09\u5b85 \u5927\u5fd7",
