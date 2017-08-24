@@ -99,8 +99,12 @@ function toJson($item) {
     "title"        => (string) $item->ItemAttributes->Title,
     "author"       => (string) $item->ItemAttributes->Author,
     "manufacturer" => (string) $item->ItemAttributes->Manufacturer,
-    "item_url"     => (string) $item_url = $item->DetailPageURL,
-    "image_url"    => (string) $item->MediumImage->URL,
+    "url"          => (string) $item_url = $item->DetailPageURL,
+    "images"       => [
+      "large"  => (string) $item->LargeImage->URL,
+      "medium" => (string) $item->MediumImage->URL,
+      "small"  => (string) $item->SmallImage->URL,
+    ],
   ];
 
   return json_encode($array);
