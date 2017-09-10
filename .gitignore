@@ -9,7 +9,3 @@ composer.phar
 # composer.lock
 
 # End of https://www.gitignore.io/api/composer
-
-# harapeko BEGIN
-config.php
-# END
