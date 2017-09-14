@@ -92,24 +92,22 @@ function getItem($itemId) {
  * @return object
  */
 function toJson($item) {
-  $array = [
+  return json_encode([
     "status"       => 'true',
     // 商品情報
     "title"        => (string) $item->ItemAttributes->Title,
     "author"       => (string) $item->ItemAttributes->Author,
     "manufacturer" => (string) $item->ItemAttributes->Manufacturer,
     // URLs
-    "wish_url"     => (string) $item_url = $item->ItemLinks->ItemLink[1],
-    "tell_url"     => (string) $item_url = $item->ItemLinks->ItemLink[2],
-    "cr_url"       => (string) $item_url = $item->ItemLinks->ItemLink[3],
-    "item_url"     => (string) $item_url = $item->ItemLinks->ItemLink[4],
+    "wish_url"     => (string) $item->ItemLinks->ItemLink[0]->URL,
+    "tell_url"     => (string) $item->ItemLinks->ItemLink[1]->URL,
+    "cr_url"       => (string) $item->ItemLinks->ItemLink[2]->URL,
+    "item_url"     => (string) $item->ItemLinks->ItemLink[3]->URL,
     // 画像
     "images"       => [
       "large"  => (string) $item->LargeImage->URL,
       "medium" => (string) $item->MediumImage->URL,
       "small"  => (string) $item->SmallImage->URL,
     ],
-  ];
-
-  return json_encode($item);
+  ]);
 }
