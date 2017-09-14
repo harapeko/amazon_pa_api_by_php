@@ -94,12 +94,16 @@ function getItem($itemId) {
 function toJson($item) {
   $array = [
     "status"       => 'true',
-    "associate"    => (string) AWS_ASSOCIATE_TAG,
-    "asin"         => (string) $item->ASIN,
+    // 商品情報
     "title"        => (string) $item->ItemAttributes->Title,
     "author"       => (string) $item->ItemAttributes->Author,
     "manufacturer" => (string) $item->ItemAttributes->Manufacturer,
-    "url"          => (string) $item_url = $item->DetailPageURL,
+    // URLs
+    "wish_url"     => (string) $item_url = $item->ItemLinks->ItemLink[1],
+    "tell_url"     => (string) $item_url = $item->ItemLinks->ItemLink[2],
+    "cr_url"       => (string) $item_url = $item->ItemLinks->ItemLink[3],
+    "item_url"     => (string) $item_url = $item->ItemLinks->ItemLink[4],
+    // 画像
     "images"       => [
       "large"  => (string) $item->LargeImage->URL,
       "medium" => (string) $item->MediumImage->URL,
@@ -107,5 +111,5 @@ function toJson($item) {
     ],
   ];
 
-  return json_encode($array);
+  return json_encode($item);
 }
