@@ -1,7 +1,6 @@
 # Usage
 
-+ `composer install`
-+ `cp config.php.example config.php` ←setting ※1
++ `config.php` ←setting ※1
 + `php -S localhost:3000`
 + `open http://localhost:3000/?item=B00HZV9XKU`
 
@@ -9,29 +8,17 @@
 
 ```json
 {
-    "status": "true",
-    "title": "Amazonベーシック 高容量充電式ニッケル水素電池単4形4個パック(充電済み、最小容量 800mAh、約500回使用可能)",
-    "author": "",
-    "manufacturer": "AmazonBasics",
-    "wish_url": "https://www.amazon.co.jp/gp/registry/wishlist/add-item.html?asin.0=B00HZV9XKU&SubscriptionId=AKIAJDKOQXGE3ZP2I43A&tag=ochigome-22&linkCode=xm2&camp=2025&creative=5143&creativeASIN=B00HZV9XKU",
-    "tell_url": "https://www.amazon.co.jp/gp/pdp/taf/B00HZV9XKU?SubscriptionId=AKIAJDKOQXGE3ZP2I43A&tag=ochigome-22&linkCode=xm2&camp=2025&creative=5143&creativeASIN=B00HZV9XKU",
-    "cr_url": "https://www.amazon.co.jp/review/product/B00HZV9XKU?SubscriptionId=AKIAJDKOQXGE3ZP2I43A&tag=ochigome-22&linkCode=xm2&camp=2025&creative=5143&creativeASIN=B00HZV9XKU",
-    "item_url": "https://www.amazon.co.jp/gp/offer-listing/B00HZV9XKU?SubscriptionId=AKIAJDKOQXGE3ZP2I43A&tag=ochigome-22&linkCode=xm2&camp=2025&creative=5143&creativeASIN=B00HZV9XKU",
-    "images": {
-        "large": "https://images-fe.ssl-images-amazon.com/images/I/51VZTraNMPL.jpg",
-        "medium": "https://images-fe.ssl-images-amazon.com/images/I/51VZTraNMPL._SL160_.jpg",
-        "small": "https://images-fe.ssl-images-amazon.com/images/I/51VZTraNMPL._SL75_.jpg"
-    }
+    "title":"Amazon\u30d9\u30fc\u30b7\u30c3\u30af \u5145\u96fb\u6c60 \u9ad8\u5bb9\u91cf\u5145\u96fb\u5f0f\u30cb\u30c3\u30b1\u30eb\u6c34\u7d20\u96fb\u6c60\u53584\u5f624\u500b\u30bb\u30c3\u30c8 (\u5145\u96fb\u6e08\u307f\u3001\u6700\u5c0f\u5bb9\u91cf 800mAh\u3001\u7d04500\u56de\u4f7f\u7528\u53ef\u80fd)",
+    "item_url":"https:\/\/www.amazon.co.jp\/dp\/B00HZV9XKU?tag=ochitegome-22&linkCode=ogi&th=1&psc=1",
+    "images":{
+        "large":"https:\/\/m.media-amazon.com\/images\/I\/41HHTZPk8TL.jpg",
+        "medium":"https:\/\/m.media-amazon.com\/images\/I\/41HHTZPk8TL._SL160_.jpg",
+        "small":"https:\/\/m.media-amazon.com\/images\/I\/41HHTZPk8TL._SL75_.jpg"
+    },
+    "price":"\uffe5898",
+    "is_prime":true
 }
 ```
 
-# Attention
-
-Dont publish `config.php` !!
-
-# Via
-- [PHPを使ってAmazonの商品情報をJSON形式で取得 | backport](https://backport.net/blog/2016/12/08/amazon_product_advertising_api/)
-
-- [AmazonのProduct Advertising APIを使ってみる | cly7796.net ※1](http://cly7796.net/wp/php/try-using-product-advertising-api-of-amazon/)
-
-- ./vendor/exeu/apai-io/samples/Lookup/SimpleLookup.php
+# Ref
+- `GetItems` of [Product Advertising API 5.0 Scratchpad](https://webservices.amazon.co.jp/paapi5/scratchpad)

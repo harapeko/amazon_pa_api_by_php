@@ -1,6 +1,22 @@
 {
+  "name" : "harapeko/amazon_pa_api_by_php",
+  "version": "1.0.0",
+  "description": "Given an item identifier, the GetItems operation returns some or all of item attributes depending on the resources requested.",
+  "keywords": [
+    "amazon",
+    "paapi5",
+    "getitems"
+  ],
+  "homepage": "https://webservices.amazon.co.jp/paapi5/scratchpad",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name" : "Product Advertising API Team",
+      "homepage": "https://webservices.amazon.com/paapi5/documentation/"
+    }
+  ],
   "require": {
-    "php": "7.1.9",
-    "exeu/apai-io": "~2.0"
+    "php": ">7.3",
+    "ext-json": "*"
   }
 }

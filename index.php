@@ -1,113 +1,78 @@
-<?php
-require_once "vendor/autoload.php";
+﻿<?php
+
 require_once "config.php";
-
-const RETRY_COUNT = 5;
-const RETRY_SLEEP_SEC = 10;
-const RESULT_ERROR_JSON = '{ "status": false }';
-
-use ApaiIO\ApaiIO;
-use ApaiIO\Configuration\GenericConfiguration;
-use ApaiIO\Operations\Lookup;
-
-// BEGIN
-$conf = new GenericConfiguration();
-$client = new \GuzzleHttp\Client();
-$request = new \ApaiIO\Request\GuzzleRequest($client);
+require_once "paapi5.php";
 
 $itemId = $_GET['item'];
 
-// ASIN IDがないならエラーを返す
-if (!$itemId) {
-  $result = RESULT_ERROR_JSON;
+$serviceName="ProductAdvertisingAPI";
+$region="us-west-2";
+$accessKey=AMZN_ACCESS_KEY;
+$secretKey=AMZN_SECRET_KEY;
+$payload="{"
+        ."  \"ItemIds\": ["
+        ."  \"${itemId}\""
+        ." ],"
+        ." \"Resources\": ["
+        ."  \"BrowseNodeInfo.BrowseNodes\","
+        ."  \"Images.Primary.Small\","
+        ."  \"Images.Primary.Medium\","
+        ."  \"Images.Primary.Large\","
+        ."  \"ItemInfo.Title\","
+        ."  \"Offers.Listings.DeliveryInfo.IsPrimeEligible\","
+        ."  \"Offers.Listings.Price\""
+        ." ],"
+        ." \"PartnerTag\": \"" . "ochitegome-22" . "\","
+        ." \"PartnerType\": \"Associates\","
+        ." \"Marketplace\": \"www.amazon.co.jp\""
+        ."}";
+$host="webservices.amazon.co.jp";
+$uriPath="/paapi5/getitems";
+$awsv4 = new AwsV4 ($accessKey, $secretKey);
+$awsv4->setRegionName($region);
+$awsv4->setServiceName($serviceName);
+$awsv4->setPath ($uriPath);
+$awsv4->setPayload ($payload);
+$awsv4->setRequestMethod ("POST");
+$awsv4->addHeader ('content-encoding', 'amz-1.0');
+$awsv4->addHeader ('content-type', 'application/json; charset=utf-8');
+$awsv4->addHeader ('host', $host);
+$awsv4->addHeader ('x-amz-target', 'com.amazon.paapi5.v1.ProductAdvertisingAPIv1.GetItems');
+$headers = $awsv4->getHeaders ();
+$headerString = "";
 
-// ASIN IDがあるとき、APIを叩く
-} else {
-  // 取得処理
-  $item = getItem($itemId);
+foreach ( $headers as $key => $value ) {
+    $headerString .= $key . ': ' . $value . "\r\n";
+}
+$params = array (
+        'http' => array (
+                'header' => $headerString,
+                'method' => 'POST',
+                'content' => $payload
+        )
+);
+$stream = stream_context_create ( $params );
 
-  // なければエラーを返す
-  if (!$item) {
-    $result = RESULT_ERROR_JSON;
+$fp = @fopen ( 'https://'.$host.$uriPath, 'rb', false, $stream );
 
-  // あればJSONにパースする
-  } else {
-    $result = toJson($item);
-  }
+if (! $fp) {
+    throw new Exception ( "Exception Occured" );
+}
+$response = @stream_get_contents ( $fp );
+if ($response === false) {
+    throw new Exception ( "Exception Occured" );
 }
 
-header('Content-Type: application/json');
-echo $result;
-// END
+$item = json_decode($response)->ItemsResult->Items[0];
 
-/**
- * AmazonのProduct Advertising APIから商品データを返す
- *
- * @param  string $itemID ASIN
- * @return object $item   商品データ
- */
-function getItem($itemId) {
-  $item = NULL;
-  $conf = new GenericConfiguration();
-  $client = new \GuzzleHttp\Client();
-  $request = new \ApaiIO\Request\GuzzleRequest($client);
-
-  // config
-  $conf->setCountry('co.jp')
-    ->setAccessKey(AWS_API_KEY)
-    ->setSecretKey(AWS_API_SECRET_KEY)
-    ->setAssociateTag(AWS_ASSOCIATE_TAG)
-    ->setRequest($request);
-
-  $apaiIO = new ApaiIO($conf);
-  $lookup = new Lookup();
-  $lookup->setItemId($itemId);
-  $lookup->setResponseGroup(array('Images', 'Small'));
-
-
-  // Product Advertising APIの制限で503になることがあるので失敗したらリトライする
-  for ($i = 0 ; $i < RETRY_COUNT; $i++) {
-    try {
-      $res = $apaiIO->runOperation($lookup);
-      $results = simplexml_load_string($res);
-
-      if ($results->Items->Request->IsValid) {
-        $item = $results->Items->Item[0];
-      }
-      break; // APIからレスポンスが返ってきたら成否を問わず処理打ち切る
-
-    } catch (Exception $e) {
-      sleep(RETRY_SLEEP_SEC); // リトライの前に一定時間待つ
-    }
-  }
-
-  return $item;
-}
-
-
-/**
- * アイテムから必要な情報を抜き出してJSON形式返す
- *
- * @param object $item
- * @return object
- */
-function toJson($item) {
-  return json_encode([
-    "status"       => 'true',
-    // 商品情報
-    "title"        => (string) $item->ItemAttributes->Title,
-    "author"       => (string) $item->ItemAttributes->Author,
-    "manufacturer" => (string) $item->ItemAttributes->Manufacturer,
-    // URLs
-    "wish_url"     => (string) $item->ItemLinks->ItemLink[0]->URL,
-    "tell_url"     => (string) $item->ItemLinks->ItemLink[1]->URL,
-    "cr_url"       => (string) $item->ItemLinks->ItemLink[2]->URL,
-    "item_url"     => (string) $item->ItemLinks->ItemLink[3]->URL,
-    // 画像
-    "images"       => [
-      "large"  => (string) $item->LargeImage->URL,
-      "medium" => (string) $item->MediumImage->URL,
-      "small"  => (string) $item->SmallImage->URL,
+echo json_encode([
+    "title" => $item->ItemInfo->Title->DisplayValue,
+    "item_url" => $item->DetailPageURL,
+    "images" => [
+        "large"  => $item->Images->Primary->Large->URL,
+        "medium" => $item->Images->Primary->Medium->URL,
+        "small"  => $item->Images->Primary->Small->URL,
     ],
-  ]);
-}
+    "price" => $item->Offers->Listings[0]->Price->DisplayAmount,
+    "is_prime" => !!$item->Offers->Listings[0]->DeliveryInfo->IsPrimeEligible,
+]);
