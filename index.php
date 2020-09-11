@@ -65,6 +65,7 @@ if ($response === false) {
 
 $item = json_decode($response)->ItemsResult->Items[0];
 
+header("Content-Type: application/json; charset=utf-8");
 echo json_encode([
     "title" => $item->ItemInfo->Title->DisplayValue,
     "item_url" => $item->DetailPageURL,
