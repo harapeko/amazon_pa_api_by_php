@@ -53,6 +53,8 @@ $params = array (
 );
 $stream = stream_context_create ( $params );
 
+sleep(3);
+
 $fp = @fopen ( 'https://'.$host.$uriPath, 'rb', false, $stream );
 
 if (! $fp) {
